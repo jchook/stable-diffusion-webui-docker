@@ -1,9 +1,5 @@
 #!/bin/bash
 
-# Required for the webui.sh to not install directly to home dir
-export install_dir=/home/app/project
-
-# Credit:
 # ANSI Shadow from https://manytools.org/hacker-tools/ascii-banner/
 echo "
 
@@ -14,15 +10,6 @@ echo "
 ██║  ██║╚██████╔╝   ██║   ╚██████╔╝ ██║ ██║ ██║ ██║ ██║
 ╚═╝  ╚═╝ ╚═════╝    ╚═╝    ╚═════╝  ╚═╝ ╚═╝ ╚═╝ ╚═╝ ╚═╝
 " >&2
-
-# Symlink .cache into $HOME
-if [ -d "$HOME/.cache" ]; then
-  echo "Found .cache" >&2
-else
-  echo "Symlinking $HOME/.cache..." >&2
-  mkdir -p .cache
-  ln -s "$(pwd)/.cache" "$HOME/.cache"
-fi
 
 # Check for webui git repo
 if [ -d stable-diffusion-webui ]; then

@@ -1,7 +1,10 @@
 set positional-arguments
 
 build:
-  docker-compose build webui
+  docker-compose build
+
+exec *args="bash":
+  docker-compose exec webui "$@"
 
 sh:
   docker-compose run webui bash

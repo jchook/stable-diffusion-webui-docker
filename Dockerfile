@@ -5,6 +5,7 @@
 # Run the nvidia-smi command to check the version
 FROM nvidia/cuda:12.0.0-runtime-ubuntu22.04
 
+# Hint: set these to your user ID
 ARG APP_UID=1000
 ARG APP_GID=1000
 
@@ -23,24 +24,30 @@ RUN getent passwd "$APP_UID" || ( \
   ) \
   && echo 'app ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers.d/33-app
 
-# Not sure if we can pre-install for the venv
-#RUN pip install gfpgan clip open_clip fastapi
-#RUN pip3 install accelerate torch torchvision
-
 # Switch from root
 USER $APP_UID:$APP_GID
 
-# You must mount ./project/stable-diffusion-webui with a model.ckpt file
-# TODO: automatically download this if it doesn't exist
+# Hint: mount this volume to avoid downloading every time
 VOLUME /home/app/project
 WORKDIR /home/app/project
 
-# TODO: Not sure if this carries into webui.sh
+# Set the install location of stable-diffusion-webui
 ENV install_dir /home/app/project
 
-# See https://huggingface.co/docs/datasets/cache
-ENV HF_DATASETS_CACHE /home/app/project/huggingface/datasets
+# See https://huggingface.co/docs/transformers/installation#cache-setup
+ENV HF_HOME /home/app/project/huggingface
 
+# Copy the entrypoint, etc
 COPY ./rootfs/ /
+
+# The AUTOMATIC1111 python app doesn't respond to SIGTERM, so be more forceful
+# Waiting on https://github.com/AUTOMATIC1111/stable-diffusion-webui/pull/6334
+STOPSIGNAL SIGINT
+
+# Set the entrypoint
+# This checks for important runtime dependencies before running webui.sh
 ENTRYPOINT [ "/entrypoint.sh" ]
-CMD ["bash", "./webui.sh"]
+
+# Run webui.sh by default
+CMD ["bash", "./webui.sh", "--listen", "--port", "7860"]
+
