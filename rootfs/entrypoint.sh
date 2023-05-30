@@ -14,9 +14,9 @@ echo "
 # Check for webui git repo
 if [ -d stable-diffusion-webui ]; then
   echo "Found stable-diffusion-webui" >&2
-elif [ -z "$NO_DOWNLOAD" ]; then
+elif [ -n "$WEBUI_DOWNLOAD" ]; then
   echo "Cloning stable-diffusion-webui..." >&2
-  git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git
+  git clone --branch "${WEBUI_BRANCH:-v1.3.0}" https://github.com/AUTOMATIC1111/stable-diffusion-webui.git
 else
   echo "Missing stable-diffusion-webui" >&2
   exit 1
@@ -36,7 +36,7 @@ if [ -f ./model.ckpt ]; then
   echo "Found model.ckpt" >&2
 elif [ -d ./models/Stable-diffusion ]; then
   echo "Found models/Stable-diffusion" >&2
-elif [ -z "$NO_DOWNLOAD" ]; then
+elif [ -n "$WEBUI_DOWNLOAD" ]; then
   echo "Downloading stable-difussion-1-4.ckpt..." >&2
   echo "TODO!" >&2
 else

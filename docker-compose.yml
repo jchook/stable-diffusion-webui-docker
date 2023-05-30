@@ -7,6 +7,8 @@ services:
         reservations:
           devices:
             - capabilities: [gpu]
+    environment:
+      - COMMANDLINE_ARGS=--allow-code --medvram --xformers --enable-insecure-extension-access --api
     ports:
       - "7860:7860"
     tty: true

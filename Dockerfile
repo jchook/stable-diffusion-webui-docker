@@ -6,6 +6,7 @@
 FROM nvidia/cuda:12.0.0-runtime-ubuntu22.04
 
 # Hint: set these to your user ID
+# See https://stackoverflow.com/questions/56844746/how-to-set-uid-and-gid-in-docker-compose
 ARG APP_UID=1000
 ARG APP_GID=1000
 
@@ -27,17 +28,26 @@ RUN getent passwd "$APP_UID" || ( \
 # Switch from root
 USER $APP_UID:$APP_GID
 
-# Hint: mount this volume to avoid downloading every time
+# Hint: mount this volume to avoid downloading stuff every time
+# See docker-compose.yml for an example
 VOLUME /home/app/project
 WORKDIR /home/app/project
 
 # Set the install location of stable-diffusion-webui
+# See https://github.com/AUTOMATIC1111/stable-diffusion-webui/blob/master/webui-user.sh
 ENV install_dir /home/app/project
 
+# Set the cache location for HuggingFace transformers downloads
 # See https://huggingface.co/docs/transformers/installation#cache-setup
 ENV HF_HOME /home/app/project/huggingface
 
-# Copy the entrypoint, etc
+# Set the branch you want to clone
+ENV WEBUI_BRANCH=v1.3.0
+
+# Whether to download the webui and models if they don't exist
+ENV WEBUI_DOWNLOAD=1
+
+# Copy entrypoint.sh
 COPY ./rootfs/ /
 
 # The AUTOMATIC1111 python app doesn't respond to SIGTERM, so be more forceful
