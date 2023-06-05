@@ -1,7 +1,7 @@
 # This Dockerfile requires nvidia-docker
 # https://hub.docker.com/r/nvidia/cuda
 #
-# This much match the CUDA version of your driver
+# This should match the CUDA version of your host's driver
 # Run the nvidia-smi command to check the version
 FROM nvidia/cuda:12.0.0-runtime-ubuntu22.04
 
@@ -13,7 +13,17 @@ ARG APP_GID=1000
 # Install
 # See https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Dependencies
 RUN apt-get -y update \
-  && apt-get -y install libgl1 libglib2.0-0 git python3 python3-venv python3-pip sudo vim wget
+  && apt-get -y install \
+    libgl1 \
+    libglib2.0-0 \
+    libgoogle-perftools-dev \
+    git \
+    python3 \
+    python3-venv \
+    python3-pip \
+    sudo \
+    vim \
+    wget
 
 # Create a non-root user
 # https://stackoverflow.com/questions/25845538/how-to-use-sudo-inside-a-docker-container
@@ -47,12 +57,11 @@ ENV WEBUI_BRANCH=v1.3.0
 # Whether to download the webui and models if they don't exist
 ENV WEBUI_DOWNLOAD=1
 
+# Load the tcmalloc library
+ENV LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libtcmalloc.so.4
+
 # Copy entrypoint.sh
 COPY ./rootfs/ /
-
-# The AUTOMATIC1111 python app doesn't respond to SIGTERM, so be more forceful
-# Waiting on https://github.com/AUTOMATIC1111/stable-diffusion-webui/pull/6334
-STOPSIGNAL SIGINT
 
 # Set the entrypoint
 # This checks for important runtime dependencies before running webui.sh
