@@ -1,7 +1,9 @@
 # AUTOMATIC1111 Stable Diffusion Web UI Docker
 
 Dockerized
-[AUTOMATIC1111/stable-diffusion-webui](https://github.com/AUTOMATIC1111/stable-diffusion-webui).
+[AUTOMATIC1111/stable-diffusion-webui](https://github.com/AUTOMATIC1111/stable-diffusion-webui)
+for generating images with Stable Diffusion on Linux.
+
 
 ## Features
 
@@ -42,4 +44,6 @@ docker compose up
 
 ## See Also
 
-- [AbdBarho/stable-diffusion-webui-docker](https://github.com/AbdBarho/stable-diffusion-webui-docker)
+- [jchook/kohya-trainer-docker](https://github.com/jchook/kohya-trainer-docker/). - train models to use with this webui
+- [AbdBarho/stable-diffusion-webui-docker](https://github.com/AbdBarho/stable-diffusion-webui-docker) - alternative docker interface for this webui
+
